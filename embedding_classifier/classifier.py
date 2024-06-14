@@ -1,12 +1,12 @@
 from embedding_classifier.embeddings import Embeddings
-from sklearn.ensemble import RandomForestClassifier
+from embedding_classifier.model import Model
 
 class EmbeddingClassifier():
 
-    def __init__(self, embedding: Embeddings) -> None:
+    def __init__(self, embedding: Embeddings, model: Model) -> None:
         # embedding model to use
         self.embedding = embedding
-        self.model = None
+        self.model = model
 
     # should train the model
     def fit(self, train, pred):
@@ -15,7 +15,6 @@ class EmbeddingClassifier():
         for t in train:
             train.append(self.embedding.embed_documents([t])[0])
         
-        self.model = RandomForestClassifier()
         self.model.fit(train, pred)
 
     # make prediction
