@@ -11,11 +11,11 @@ class EmbeddingClassifier():
     # should train the model
     def fit(self, train, pred):
         # TODO batch encode
-        train = []
+        train_embeddings = []
         for t in train:
-            train.append(self.embedding.embed_documents([t])[0])
+            train_embeddings.append(self.embedding.embed_documents([t])[0])
         
-        self.model.fit(train, pred)
+        self.model.fit(train_embeddings, pred)
 
     # make prediction
     def predict(self, data):
