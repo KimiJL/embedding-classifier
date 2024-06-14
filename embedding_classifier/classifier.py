@@ -23,4 +23,4 @@ class EmbeddingClassifier():
         for d in data:
             query.append(self.embedding.embed_query(d))
 
-        self.model.predict(query)
+        return self.model.predict(query)
