@@ -20,6 +20,7 @@ class EmbeddingClassifier():
     # make prediction
     def predict(self, data):
         query = []
+        # TODO check that it's a string vs list, shouldn't iterate through string
         for d in data:
             query.append(self.embedding.embed_query(d))
 

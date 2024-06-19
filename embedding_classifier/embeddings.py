@@ -15,8 +15,8 @@ class Embeddings(ABC):
 
 class SentenceTransformerEmbeddings(Embeddings):
 
-    def __init__(self, model_name_or_path: str) -> None:
-        self.model = SentenceTransformer(model_name_or_path)
+    def __init__(self, model_name_or_path: str, device: str) -> None:
+        self.model = SentenceTransformer(model_name_or_path, device=device)
     
     def embed_documents(self, data: List[str]) -> List[List[float]]:
         return self.model.encode(data).tolist()
