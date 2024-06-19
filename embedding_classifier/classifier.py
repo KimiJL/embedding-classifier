@@ -12,8 +12,8 @@ class EmbeddingClassifier():
     def fit(self, train, pred):
         # TODO batch encode
         train_embeddings = []
-        for t in train:
-            train_embeddings.append(self.embedding.embed_documents([t])[0])
+
+        train_embeddings = self.embedding.embed_documents(train)
         
         self.model.fit(train_embeddings, pred)
 
