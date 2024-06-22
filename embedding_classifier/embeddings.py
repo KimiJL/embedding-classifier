@@ -1,7 +1,8 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import List
-from sentence_transformers import SentenceTransformer
 
+logger = logging.getLogger(__name__)
 
 class Embeddings(ABC):
 
@@ -14,8 +15,13 @@ class Embeddings(ABC):
         '''embed the query'''
 
 class SentenceTransformerEmbeddings(Embeddings):
-
     def __init__(self, model_name_or_path: str, device: str) -> None:
+        try:
+            from sentence_transformers import SentenceTransformer
+        except ImportError:
+            logger.error("sentence-transformers required for SentenceTransformerEmbeddings")
+            raise
+
         self.model = SentenceTransformer(model_name_or_path, device=device)
     
     def embed_documents(self, data: List[str]) -> List[List[float]]:
