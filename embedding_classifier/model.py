@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Dict, List
 
 from sklearn.ensemble import RandomForestClassifier
 
@@ -16,8 +16,9 @@ class Model(ABC):
 
 class RandomForest(Model):
 
-    def __init__(self) -> None:
-        self.model = RandomForestClassifier()
+    def __init__(self, model_args: Dict = None) -> None:
+        model_args = model_args if model_args else {}
+        self.model = RandomForestClassifier(**model_args)
     
     def fit(self, train: List[List[float]], pred: List[int]):
         self.model.fit(train, pred)

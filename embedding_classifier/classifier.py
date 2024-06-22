@@ -10,7 +10,6 @@ class EmbeddingClassifier():
 
     # should train the model
     def fit(self, train, pred):
-        # TODO batch encode
         train_embeddings = []
 
         train_embeddings = self.embedding.embed_documents(train)
