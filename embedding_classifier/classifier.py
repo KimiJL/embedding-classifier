@@ -24,3 +24,6 @@ class EmbeddingClassifier():
             query.append(self.embedding.embed_query(d))
 
         return self.model.predict(query)
+
+    def save_model(self, save_path: str):
+        self.model.save(save_path)

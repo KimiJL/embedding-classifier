@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List
+from pickle import dump, HIGHEST_PROTOCOL
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cluster import KMeans as SklearnKMeans
@@ -12,6 +13,10 @@ class Model(ABC):
 
     @abstractmethod
     def predict(self, input: List[List[float]]):
+        pass
+    
+    @abstractmethod
+    def save(self, save_path: str):
         pass
 
 
@@ -29,6 +34,10 @@ class RandomForest(Model):
 
     def predict(self, input: List[List[float]]):
         return self.model.predict(input)
+
+    def save(self, save_path: str):
+        with open(save_path, "wb") as f:
+            dump(self.model, f, protocol=HIGHEST_PROTOCOL)
     
 class KMeans(Model):
     def __init__(self, model_args: Dict = None) -> None:
@@ -40,3 +49,7 @@ class KMeans(Model):
     
     def predict(self, input: List[List[float]]):
         return self.model.predict(input)
+
+    def save(self, save_path: str):
+        with open(save_path, "wb") as f:
+            dump(self.model, f, protocol=HIGHEST_PROTOCOL)
