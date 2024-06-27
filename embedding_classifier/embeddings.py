@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Union
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +11,7 @@ class Embeddings(ABC):
         '''embed the documents'''
 
     @abstractmethod
-    def embed_query(self, query: str) -> List[float]:
+    def embed_query(self, query: Union[List[str], str]) -> List[List[float]]:
         '''embed the query'''
 
 class SentenceTransformerEmbeddings(Embeddings):
@@ -27,5 +27,8 @@ class SentenceTransformerEmbeddings(Embeddings):
     def embed_documents(self, data: List[str]) -> List[List[float]]:
         return self.model.encode(data).tolist()
 
-    def embed_query(self, query: str) -> List[float]:
-        return self.model.encode([query]).tolist()[0]
+    def embed_query(self, query: Union[List[str], str]) -> List[List[float]]:
+        if isinstance(query, str): 
+            query = [query]
+
+        return self.model.encode(query).tolist()
