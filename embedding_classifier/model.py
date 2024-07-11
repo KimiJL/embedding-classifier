@@ -7,8 +7,23 @@ from sklearn.cluster import KMeans as SklearnKMeans
 
 class Model(ABC):
 
-    @abstractmethod
+    def __init__(self, model_args: Dict = None) -> None:
+        self.model_args = model_args
+        self.fitted_model = None
+        self.embedding_size = None
+    
     def fit(self, train: List[List[float]], pred: List[int] = None):
+        if not isinstance(train, list) and len(train) > 0:
+            raise Exception("Expect list of embeddings for training")
+        
+        if not isinstance(train[0], list):
+            raise Exception("Embedding in train set is not a list")
+    
+        self.embedding_size = len(train[0])
+        self._fit(train, pred)
+
+    @abstractmethod
+    def _fit(self, train: List[List[float]], pred: List[int] = None):
         pass
 
     @abstractmethod
@@ -21,35 +36,37 @@ class Model(ABC):
 
 
 class RandomForest(Model):
-
-    def __init__(self, model_args: Dict = None) -> None:
-        model_args = model_args if model_args else {}
-        self.model = RandomForestClassifier(**model_args)
     
-    def fit(self, train: List[List[float]], pred: List[int] = None):
+    def _fit(self, train: List[List[float]], pred: List[int] = None):
         if pred is None:
             raise Exception("pred is required for supervised learning")
-
-        self.model.fit(train, pred)
+        
+        self.fitted_model = RandomForestClassifier(**self.model_args)
+        self.fitted_model.fit(train, pred)
 
     def predict(self, input: List[List[float]]):
-        return self.model.predict(input)
+        if self.fitted_model is None:
+            raise Exception("model is not trained or loaded for prediction")
+
+        return self.fitted_model.predict(input)
 
     def save(self, save_path: str):
         with open(save_path, "wb") as f:
-            dump(self.model, f, protocol=HIGHEST_PROTOCOL)
+            dump(self.fitted_model, f, protocol=HIGHEST_PROTOCOL)
     
 class KMeans(Model):
-    def __init__(self, model_args: Dict = None) -> None:
-        model_args = model_args if model_args else {}
-        self.model = SklearnKMeans(**model_args)
 
-    def fit(self, train: List[List[float]], pred: List[int]= None):
-        self.model.fit(train)
+    def _fit(self, train: List[List[float]], pred: List[int]= None):
+        self.fitted_model = SklearnKMeans(**self.model_args)
+
+        self.fitted_model.fit(train)
     
     def predict(self, input: List[List[float]]):
-        return self.model.predict(input)
+        if self.fitted_model is None:
+            raise Exception("model is not trained or loaded for prediction")
+
+        return self.fitted_model.predict(input)
 
     def save(self, save_path: str):
         with open(save_path, "wb") as f:
-            dump(self.model, f, protocol=HIGHEST_PROTOCOL)
+            dump(self.fitted_model, f, protocol=HIGHEST_PROTOCOL)
