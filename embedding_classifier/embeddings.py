@@ -22,8 +22,17 @@ class SentenceTransformerEmbeddings(Embeddings):
             logger.error("sentence-transformers required for SentenceTransformerEmbeddings")
             raise
 
+        self.model_name_or_path = model_name_or_path
+        self.device = device
         self.model = SentenceTransformer(model_name_or_path, device=device)
     
+    def meta_data(self):
+        return {
+            "embedding_type": "SentenceTransformerEmbeddings",
+            "model_name_or_path": self.model_name_or_path,
+            "device": self.device
+        }
+
     def embed_documents(self, data: List[str]) -> List[List[float]]:
         return self.model.encode(data).tolist()
 
